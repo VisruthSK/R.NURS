@@ -8,7 +8,7 @@
 <!-- badges: end -->
 
 A Base R, simple implementation of the No-Underrun Sampler. This
-implementation aims to mostly directly implement the algorithm as
+package aims to mostly directly implement the algorithm as
 described by the paper, with at most small changes for code aesthetics
 and performance. This version uses the memory saving technique described
 in section 2.2.
