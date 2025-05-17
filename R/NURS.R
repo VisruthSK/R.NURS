@@ -45,6 +45,7 @@ NURS_step <- function(logpdf, theta, epsilon, h, M) {
   # hit
   z <- rnorm(d)
   rho <- z / sqrt(sum(z^2))
+  # https://artowen.su.domains/mc/Ch-randvectors.pdf (pg. 24)
 
   # run
   s <- runif(1, -h / 2, h / 2)
@@ -55,12 +56,11 @@ NURS_step <- function(logpdf, theta, epsilon, h, M) {
   )
     theta + s * rho else theta
 
-  # helpers
   log_eps_h <- log(epsilon) + log(h)
   orbit_points <- list(theta0)
   log_vals <- logpdf(theta0)
 
-  # bookkeeping to get ends
+  # bookkeeping to get orbit ends
   left <- right <- 1
 
   # Orbit selection procedure

@@ -6,7 +6,7 @@ Authors@R:
 Description: A bare-bones R implementation of the No-Underrun Sampler
     (Nawaf Bou-Rabee, Bob Carpenter, Sifan Liu, Stefan Oberdörster. 2025.)
     written in base R. This implementation attempts to stick very closely
-    to the algorithm described in Appendix A of the paper.
+    to the algorithm described in Section 2 and Appendix A of the paper.
 License: MIT + file LICENSE
 Suggests:
     matrixStats
