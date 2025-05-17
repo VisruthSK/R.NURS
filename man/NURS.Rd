@@ -16,11 +16,14 @@ NURS(logpdf, theta_init, n, epsilon, h, M)
 
 \item{n}{number of draws}
 
-\item{epsilon}{density threshold}
+\item{epsilon}{non-negative density threshold}
 
-\item{h}{lattice size}
+\item{h}{positive lattice size}
 
 \item{M}{maximum number of doublings}
+}
+\value{
+a sequence of draws
 }
 \description{
 NURS draws

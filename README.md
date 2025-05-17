@@ -10,7 +10,8 @@
 A Base R, simple implementation of the No-Underrun Sampler. This
 implementation aims to mostly directly implement the algorithm as
 described by the paper, with at most small changes for code aesthetics
-and performance.
+and performance. This version uses the memory saving technique described
+in section 2.2.
 
 ## Installation
 
@@ -33,6 +34,7 @@ logpdf_funnel <- function(theta) {
   y <- theta[1]
   dnorm(y, 0, 3, log = TRUE) + sum(dnorm(theta[-1], 0, exp(y / 2), log = TRUE))
 }
+
 samples <- NURS(
   logpdf_funnel,
   theta_init = rep(0, 15),

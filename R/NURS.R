@@ -39,7 +39,7 @@ NURS_sub_stop <- function(log_vals, log_eps_h) {
 #' @param epsilon density threshold
 #' @param h lattice size
 #' @param M maximum number of doublings
-#' @returns One NURS step from theta.
+#' @returns next draw
 NURS_step <- function(logpdf, theta, epsilon, h, M) {
   d <- length(theta)
   # hit
@@ -57,11 +57,13 @@ NURS_step <- function(logpdf, theta, epsilon, h, M) {
     theta + s * rho else theta
 
   log_eps_h <- log(epsilon) + log(h)
-  orbit_points <- list(theta0)
-  log_vals <- logpdf(theta0)
+  logW <- logpdf(theta0)
+  theta_tilde <- theta0
 
   # bookkeeping to get orbit ends
   left <- right <- 1
+  left_point <- right_point <- theta0
+  left_val <- right_val <- logW
 
   # Orbit selection procedure
   B <- sample(c(FALSE, TRUE), M, replace = TRUE)
@@ -70,32 +72,34 @@ NURS_step <- function(logpdf, theta, epsilon, h, M) {
     n_ext <- 2^(k - 1)
     orbit_ext <- lapply(
       seq_len(n_ext),
-      \(i)
-        (if (B_k) orbit_points[[right]] else orbit_points[[left]]) +
-          (2 * B_k - 1) * i * h * rho
+      \(i) (if (B_k) right_point else left_point) + i * (2 * B_k - 1) * h * rho
     )
     log_ext <- sapply(orbit_ext, logpdf)
 
+    # Recursive sub-stopping criterion
     if (NURS_sub_stop(log_ext, log_eps_h)) break
 
-    if (B_k) {
-      orbit_points <- c(orbit_points, orbit_ext)
-      log_vals <- c(log_vals, log_ext)
-    } else {
-      orbit_points <- c(orbit_ext, orbit_points)
-      log_vals <- c(log_ext, log_vals)
-      left <- 1
+    for (i in seq_len(n_ext)) {
+      theta_i <- orbit_ext[[i]]
+      log_i <- log_ext[i]
+      logW_new <- log_sum_exp(c(logW, log_i))
+      if (runif(1) < exp(log_i - logW_new)) theta_tilde <- theta_i
+      logW <- logW_new
     }
-    right <- right + n_ext
 
-    if (NURS_stop(log_vals, log_eps_h)) break
+    if (B_k) {
+      right_point <- orbit_ext[[n_ext]]
+      right_val <- log_ext[n_ext]
+    } else {
+      left_point <- orbit_ext[[n_ext]]
+      left_val <- log_ext[n_ext]
+    }
+
+    # No-underrun stopping criterion
+    if (max(left_val, right_val) <= log_eps_h + logW) break
   }
 
-  orbit_points[[sample(
-    length(log_vals),
-    1,
-    prob = exp(log_vals - log_sum_exp(log_vals))
-  )]]
+  theta_tilde
 }
 
 #' NURS draws
@@ -103,12 +107,15 @@ NURS_step <- function(logpdf, theta, epsilon, h, M) {
 #' @param logpdf log (non-normalized) target density
 #' @param theta_init initial state
 #' @param n number of draws
-#' @param epsilon density threshold
-#' @param h lattice size
+#' @param epsilon non-negative density threshold
+#' @param h positive lattice size
 #' @param M maximum number of doublings
+#' @returns a sequence of draws
+#'
 #' @export
 #' @source <https://arxiv.org/abs/2501.18548v2>
 NURS <- function(logpdf, theta_init, n, epsilon, h, M) {
+  stopifnot(epsilon >= 0, h > 0)
   d <- length(theta_init)
   draws <- matrix(NA, n, d)
   draws[1, ] <- theta_init

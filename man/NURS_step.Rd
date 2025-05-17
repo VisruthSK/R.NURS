@@ -18,7 +18,7 @@ NURS_step(logpdf, theta, epsilon, h, M)
 \item{M}{maximum number of doublings}
 }
 \value{
-One NURS step from theta.
+next draw
 }
 \description{
 Single NURS step
