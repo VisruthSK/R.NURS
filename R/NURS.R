@@ -8,6 +8,14 @@ log_sum_exp <- function(log_vals) {
   }
 }
 
+log_sum_two <- function(log_a, log_b) {
+  if (log_a > log_b) {
+    log_a + log1p(exp(log_b - log_a))
+  } else {
+    log_b + log1p(exp(log_a - log_b))
+  }
+}
+
 #' Check no underrun stopping condition
 #'
 #' @param log_vals orbit
@@ -85,7 +93,7 @@ NURS_step <- function(logpdf, theta, epsilon, h, M) {
     for (i in seq_len(n_ext)) {
       theta_i <- orbit_ext[[i]]
       log_i <- log_ext[i]
-      logW_new <- log_sum_exp(c(logW, log_i))
+      logW_new <- log_sum_two(logW, log_i)
       if (runif(1) < exp(log_i - logW_new)) theta_tilde <- theta_i
       logW <- logW_new
     }
