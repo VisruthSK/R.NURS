@@ -12,6 +12,7 @@ log_sum_exp <- function(log_vals) {
 #'
 #' @param log_vals orbit
 #' @param log_eps_h log(epsilon) + log(h)
+#'
 #' @returns True if Orbit satisfies stopping criterion.
 NURS_stop <- function(log_vals, log_eps_h) {
   max(log_vals[1], log_vals[length(log_vals)]) <=
@@ -22,6 +23,7 @@ NURS_stop <- function(log_vals, log_eps_h) {
 #'
 #' @param log_vals sub orbit
 #' @param log_eps_h log(epsilon) + log(h)
+#'
 #' @returns True if sub orbit satisfies stopping criterion.
 NURS_sub_stop <- function(log_vals, log_eps_h) {
   n <- length(log_vals)
@@ -39,6 +41,7 @@ NURS_sub_stop <- function(log_vals, log_eps_h) {
 #' @param epsilon density threshold
 #' @param h lattice size
 #' @param M maximum number of doublings
+#'
 #' @returns next draw
 NURS_step <- function(logpdf, theta, epsilon, h, M) {
   d <- length(theta)
@@ -110,6 +113,7 @@ NURS_step <- function(logpdf, theta, epsilon, h, M) {
 #' @param epsilon non-negative density threshold
 #' @param h positive lattice size
 #' @param M maximum number of doublings
+#'
 #' @returns a sequence of draws
 #'
 #' @export

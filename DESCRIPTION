@@ -8,6 +8,8 @@ Description: A bare-bones R implementation of the No-Underrun Sampler
     written in base R. This implementation attempts to stick very closely
     to the algorithm described in Section 2 and Appendix A of the paper.
 License: MIT + file LICENSE
+Imports: 
+    stats
 Suggests:
     matrixStats
 Encoding: UTF-8

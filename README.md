@@ -13,6 +13,9 @@ described by the paper, with at most small changes for code aesthetics
 and performance. This version uses the memory saving technique described
 in section 2.2.
 
+This code doesn’t parallelize the density calculation for orbit
+extensions but doing so is trivial.
+
 ## Installation
 
 You can install the development version of R.NURS from
