@@ -1,20 +1,25 @@
 
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
 # R.NURS
+
+<!-- badges: start -->
+
+<!-- badges: end -->
 
 Base R implementation of the No-Underrun Sampler.
 
 ## Installation
 
-You can install the development version of R.NURS like so:
+You can install the development version of R.NURS from
+[GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("pak")
 pak::pak("VisruthSK/R.NURS")
 ```
 
-## Example
-
-This is a basic example which shows you how to solve a common problem:
+## Example: Neal’s Funnel
 
 ``` r
 library(R.NURS)
@@ -40,3 +45,4 @@ data.frame(y = samples[, 1], x1 = samples[, 2]) |>
   theme_minimal()
 ```
 
+<img src="man/figures/README-funnel-1.png" width="100%" />

@@ -1,4 +1,5 @@
 log_sum_exp <- function(log_vals) {
+  # if matrixStats is available, rely on C version of logSumExp
   if (requireNamespace("matrixStats", quietly = TRUE)) {
     matrixStats::logSumExp(log_vals)
   } else {
@@ -7,13 +8,21 @@ log_sum_exp <- function(log_vals) {
   }
 }
 
-# No underrun condition
+#' Check no underrun stopping condition
+#'
+#' @param log_vals orbit
+#' @param log_eps_h log(epsilon) + log(h)
+#' @returns True if Orbit satisfies stopping criterion.
 NURS_stop <- function(log_vals, log_eps_h) {
   max(log_vals[1], log_vals[length(log_vals)]) <=
     log_eps_h + log_sum_exp(log_vals)
 }
 
-# Recursive sub stopping
+#' Recursively check sub stopping
+#'
+#' @param log_vals sub orbit
+#' @param log_eps_h log(epsilon) + log(h)
+#' @returns True if sub orbit satisfies stopping criterion.
 NURS_sub_stop <- function(log_vals, log_eps_h) {
   n <- length(log_vals)
   if (n < 2) return(FALSE)
@@ -23,6 +32,14 @@ NURS_sub_stop <- function(log_vals, log_eps_h) {
     NURS_sub_stop(log_vals[-left_indices], log_eps_h)
 }
 
+#' Single NURS step
+#'
+#' @param logpdf log (non-normalized) target density
+#' @param theta current state
+#' @param epsilon density threshold
+#' @param h lattice size
+#' @param M maximum number of doublings
+#' @returns One NURS step from theta.
 NURS_step <- function(logpdf, theta, epsilon, h, M) {
   d <- length(theta)
   # hit
@@ -81,9 +98,19 @@ NURS_step <- function(logpdf, theta, epsilon, h, M) {
   )]]
 }
 
+#' NURS draws
+#'
+#' @param logpdf log (non-normalized) target density
+#' @param theta_init initial state
+#' @param n number of draws
+#' @param epsilon density threshold
+#' @param h lattice size
+#' @param M maximum number of doublings
+#' @export
+#' @source <https://arxiv.org/abs/2501.18548v2>
 NURS <- function(logpdf, theta_init, n, epsilon, h, M) {
   d <- length(theta_init)
-  draws <- matrix(NA_real_, n, d)
+  draws <- matrix(NA, n, d)
   draws[1, ] <- theta_init
   for (i in 2:n) {
     draws[i, ] <- NURS_step(logpdf, draws[i - 1, ], epsilon, h, M)
