@@ -77,7 +77,7 @@ NURS_step <- function(logpdf, theta, epsilon, h, M) {
       seq_len(n_ext),
       \(i) (if (B_k) right_point else left_point) + i * (2 * B_k - 1) * h * rho
     )
-    log_ext <- sapply(orbit_ext, logpdf)
+    log_ext <- vapply(orbit_ext, logpdf, numeric(1))
 
     # Recursive sub-stopping criterion
     if (NURS_sub_stop(log_ext, log_eps_h)) break
