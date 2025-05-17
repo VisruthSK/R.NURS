@@ -1,0 +1,42 @@
+
+# R.NURS
+
+Base R implementation of the No-Underrun Sampler.
+
+## Installation
+
+You can install the development version of R.NURS like so:
+
+``` r
+# install.packages("pak")
+pak::pak("VisruthSK/R.NURS")
+```
+
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+``` r
+library(R.NURS)
+library(ggplot2)
+
+set.seed(0)
+logpdf_funnel <- function(theta) {
+  y <- theta[1]
+  dnorm(y, 0, 3, log = TRUE) + sum(dnorm(theta[-1], 0, exp(y / 2), log = TRUE))
+}
+samples <- NURS(
+  logpdf_funnel,
+  theta_init = rep(0, 15),
+  n = 5000,
+  epsilon = 0.1,
+  h = 0.5,
+  M = 5
+)
+
+data.frame(y = samples[, 1], x1 = samples[, 2]) |>
+  ggplot(aes(x = y, y = x1)) +
+  geom_point(alpha = 0.3) +
+  theme_minimal()
+```
+
