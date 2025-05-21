@@ -128,8 +128,7 @@ NURS_step <- function(logpdf, theta, epsilon, h, M) {
 #' @source <https://arxiv.org/abs/2501.18548v2>
 NURS <- function(logpdf, theta_init, n, epsilon, h, M) {
   stopifnot(epsilon >= 0, h > 0)
-  d <- length(theta_init)
-  draws <- matrix(NA, n, d)
+  draws <- matrix(0, n, length(theta_init))
   draws[1, ] <- theta_init
   for (i in 2:n) {
     draws[i, ] <- NURS_step(logpdf, draws[i - 1, ], epsilon, h, M)
